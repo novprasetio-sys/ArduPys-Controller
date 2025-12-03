@@ -142,3 +142,8 @@ void loop() {
     Serial.println("DELTA");
   }
 }
+
+
+# cek vidio demo pada link di bawah ini
+
+https://www.linkedin.com/posts/novan-giri-prasetio-11b806158_bagaimana-caranya-setup-arduino-yang-terintegrasi-activity-7402066085149417473-WduU?utm_source=share&utm_medium=member_android&rcm=ACoAACXZyScBisAj-eFrOjpFhvidv1_Z69zpz6E
