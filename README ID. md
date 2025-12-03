@@ -1,87 +1,83 @@
-ArduPys Controller — GUI Star Delta
+# ArduPys Controller — GUI Star Delta
 
-Simulasi kontrol Star–Delta menggunakan GUI Python Tkinter dan Arduino UNO melalui Serial.
-
-
----
-
-🔌 Pin Arduino
-
-Fungsi	Pin
-
-LED RUN (Hijau)	5
-LED STAR (Kuning)	6
-LED DELTA (Merah)	7
-Tombol Overload	13
-
-
+Simulasi kontrol **Star–Delta** menggunakan **GUI Python (Tkinter)** dan **Arduino UNO** melalui Serial.
 
 ---
 
-📡 Perintah Serial
+## 🔌 Pin Arduino
 
-START
-STOP
-RESET
-STATE:STAR
-STATE:DELTA
-OVERLOAD
-
+| Fungsi        | Pin |
+|---------------|-----|
+| LED RUN (Hijau) | 5   |
+| LED STAR (Kuning)| 6   |
+| LED DELTA (Merah)| 7  |
+| Tombol Overload  | 13  |
 
 ---
 
-🖥 Kode Python (gui.py)
+## ⚡ Cara Setup
 
+1. Hubungkan LED & tombol sesuai tabel pin di atas.  
+2. Pasang Arduino UNO ke PC melalui USB.  
+3. Jalankan GUI Python setelah Arduino terhubung.  
+4. Pastikan COM port di Python sesuai PC/laptop kamu (`COM8` di contoh).  
+
+---
+
+## 🖥 Kode Python GUI (`gui.py`)
+
+```python
 import tkinter as tk
 import serial, threading, time
 
+# Ganti COM port sesuai PC/laptop kamu
 ser = serial.Serial("COM8", 115200, timeout=1)
 time.sleep(2)
 
 def send(x):
     ser.write((x+"\n").encode())
 
-def update_status(t, c):
-    lbl.config(text=t, bg=c)
+def update_status(text, color):
+    lbl.config(text=text, bg=color)
 
 def listen():
     while True:
         try:
             r = ser.readline().decode().strip()
-            if r=="": continue
+            if not r:
+                continue
             print(">>", r)
 
-            if r=="STAR": update_status("STAR", "yellow")
-            elif r=="DELTA": update_status("DELTA", "green")
-            elif r=="STOP": update_status("STOP", "grey")
-            elif r=="OVERLOAD": update_status("OVERLOAD", "red")
-            elif r=="RESET_OK": update_status("READY", "white")
+            if r == "STAR": update_status("STAR", "yellow")
+            elif r == "DELTA": update_status("DELTA", "green")
+            elif r == "STOP": update_status("STOP", "grey")
+            elif r == "OVERLOAD": update_status("OVERLOAD", "red")
+            elif r == "RESET_OK": update_status("READY", "white")
 
-        except:
+        except Exception:
             pass
 
 root = tk.Tk()
 root.title("Star Delta")
 root.geometry("300x230")
 
-lbl = tk.Label(root, text="READY", font=("Arial",20), bg="white")
+lbl = tk.Label(root, text="READY", font=("Arial", 20), bg="white")
 lbl.pack(pady=10)
 
 tk.Button(root, text="START", font=("Arial",14),
-          command=lambda:send("START"), width=12, bg="#4CAF50", fg="white").pack(pady=4)
+          command=lambda: send("START"), width=12, bg="#4CAF50", fg="white").pack(pady=4)
 
 tk.Button(root, text="STOP", font=("Arial",14),
-          command=lambda:send("STOP"), width=12, bg="#F44336", fg="white").pack(pady=4)
+          command=lambda: send("STOP"), width=12, bg="#F44336", fg="white").pack(pady=4)
 
 tk.Button(root, text="RESET", font=("Arial",14),
-          command=lambda:send("RESET"), width=12).pack(pady=4)
+          command=lambda: send("RESET"), width=12).pack(pady=4)
 
 threading.Thread(target=listen, daemon=True).start()
 
 root.mainloop()
 
-🔧 Kode Arduino (arduino_star_delta.ino)
-
+// Arduino C code
 const int STAR = 6;
 const int DELTA = 7;
 const int RUNLED = 5;
@@ -105,7 +101,6 @@ void setup() {
 }
 
 void loop() {
-
   if (digitalRead(OVERLOAD) == LOW) {
     digitalWrite(STAR,0);
     digitalWrite(DELTA,0);
@@ -118,7 +113,8 @@ void loop() {
   if (Serial.available()) {
     String cmd = Serial.readStringUntil('\n');
     cmd.trim();
-    if (cmd=="START") {
+
+    if (cmd == "START") {
       digitalWrite(RUNLED,1);
       digitalWrite(STAR,1);
       digitalWrite(DELTA,0);
@@ -126,19 +122,19 @@ void loop() {
       proses = true;
       Serial.println("STAR");
     }
-    else if (cmd=="STOP") {
+    else if (cmd == "STOP") {
       digitalWrite(RUNLED,0);
       digitalWrite(STAR,0);
       digitalWrite(DELTA,0);
       proses = false;
       Serial.println("STOP");
     }
-    else if (cmd=="RESET") {
+    else if (cmd == "RESET") {
       Serial.println("RESET_OK");
     }
   }
 
-  if (proses && millis()-t >= 5000) {
+  if (proses && millis() - t >= 5000) {
     digitalWrite(STAR,0);
     digitalWrite(DELTA,1);
     proses = false;
