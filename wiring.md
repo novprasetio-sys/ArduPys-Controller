@@ -1,13 +1,6 @@
-+---------------------+
-         |      Arduino        |
-         |---------------------|
-         | 6  → STAR           |
-         | 7  → DELTA          |
-         | 5  → RUNLED         |
-         | 13 → OVERLOAD (IN)  |
-         +---------------------+
-
-STAR  → Contactor Star Coil
-DELTA → Contactor Delta Coil
-RUNLED → LED indikator motor running
-OVERLOAD → Tombol / sensor proteksi (active-low)
++----------- Arduino -----------+
+      | 6 → STAR (Kontaktor Star)     |
+      | 7 → DELTA (Kontaktor Delta)   |
+      | 5 → RUNLED (LED Motor)        |
+      | 13 → OVERLOAD (Tombol/Sensor)|
+      +-------------------------------+
