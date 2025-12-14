@@ -97,14 +97,14 @@ void setup() {
 
 void loop() {
 
-  if (digitalRead(offButton) == HIGH || digitalRead(overloadButton) == HIGH) {
+  if (digitalRead(offButton) == LOW || digitalRead(overloadButton) == LOW) {
     motorState = 0;
     digitalWrite(runLed, LOW);
     digitalWrite(starLed, LOW);
     digitalWrite(deltaLed, LOW);
   }
 
-  if (digitalRead(onButton) == HIGH && motorState == 0) {
+  if (digitalRead(onButton) == LOW && motorState == 0) {
     motorState = 1;
     digitalWrite(runLed, HIGH);
     digitalWrite(starLed, HIGH);
