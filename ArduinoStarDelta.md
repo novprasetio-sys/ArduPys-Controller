@@ -86,9 +86,9 @@ const long interval = 5000; // 5 detik
 int motorState = 0; // 0: OFF, 1: STAR, 2: DELTA
 
 void setup() {
-  pinMode(onButton, INPUT);
-  pinMode(offButton, INPUT);
-  pinMode(overloadButton, INPUT);
+  pinMode(onButton, INPUT_PULLUP);
+  pinMode(offButton, INPUT_PULLUP);
+  pinMode(overloadButton, INPUT_PULLUP);
 
   pinMode(runLed, OUTPUT);
   pinMode(starLed, OUTPUT);
